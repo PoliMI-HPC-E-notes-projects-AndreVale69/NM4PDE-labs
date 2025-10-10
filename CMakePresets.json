@@ -21,6 +21,20 @@
       "environment": {
         "LD_LIBRARY_PATH": "/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/arpack/3.8.0/lib:/u/sw/toolchains/gcc-glibc/11.2.0/base/lib:/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/hdf5/1.12.0/lib:$LD_LIBRARY_PATH"
       }
+    },
+    {
+      "name": "local-debug",
+      "displayName": "Local system (g++ + mpicxx)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++",
+        "MPI_C_COMPILER": "/usr/bin/mpicc",
+        "MPI_CXX_COMPILER": "/usr/bin/mpicxx",
+        "CMAKE_PREFIX_PATH": ""
+      },
+      "environment": {}
     }
   ],
   "buildPresets": [
@@ -29,6 +43,15 @@
       "configurePreset": "nm4pde-lab",
       "displayName": "Build with nm4pde-lab preset",
       "description": "Build using the nm4pde-lab configure preset",
+      "targets": [],
+      "configuration": "Debug",
+      "cleanFirst": true
+    },
+    {
+      "name": "local-build",
+      "configurePreset": "local-debug",
+      "displayName": "Build locally with system toolchain",
+      "description": "Build using the local-debug configure preset (g++/mpicxx)",
       "targets": [],
       "configuration": "Debug",
       "cleanFirst": true
