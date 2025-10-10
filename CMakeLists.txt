@@ -91,6 +91,5 @@ message(STATUS "CMake current dir: ${CMAKE_CURRENT_SOURCE_DIR}")
 message(STATUS)
 
 # Add the executable target.
-add_subdirectory(
-        lab-1
-)
+add_subdirectory(lab-1)
+add_subdirectory(lab-2)

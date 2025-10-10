@@ -19,7 +19,9 @@ cd nm4pde-lab || exit 1
 
 # ask the user which example to run
 printf "\n%b\n" "${green}~ Available labs:${reset}"
-examples=("lab-1")
+examples=(
+  "lab-1" "lab-2"
+)
 select example in "${examples[@]}"; do
     if [[ " ${examples[*]} " == *" $example "* ]]; then
         printf "\n%b %s\n" "${green}\u2714${reset}" "Running example: $example"
