@@ -1,9 +1,7 @@
 
 #include "Poisson1D.hpp"
 
-// Main function.
-int
-main(int /*argc*/, char * /*argv*/[])
+int main(int /*argc*/, char * /*argv*/[])
 {
     const unsigned int N = 39;
     const unsigned int r = 1;
