@@ -1,8 +1,28 @@
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fpolimi-hpc-e-notes-projects-andrevale69.github.io%2FHPC-E-PoliMI-university-notes%2F&up_message=online&up_color=green&down_message=offline&down_color=red&logo=githubpages&label=Notes%20Website%20status)
+
 # Laboratory - Numerical Methods for Partial Differential Equations
 
-**Important:** The helper script `run.sh` and the `nm4pde-lab` configure preset are intended for HPC systems (like PC's of Politecnico di Milano students) that provide compilers and libraries via [mk-style module stacks](https://github.com/pcafrica/mk)
-(the preset uses fixed toolchain paths under `/u/sw/toolchains/...`).
-If you are not on such a system, do not use `./run.sh` — instead follow the "Manual build" instructions below or adapt `CMakePresets.json` to your local toolchain.
+## Table of Contents
+
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Running the built examples](#running-the-built-examples)
+- [`run.sh` usage](#runsh-usage)
+
+> [!IMPORTANT]  
+> The helper script `run.sh` and the `nm4pde-lab` configure preset are intended for HPC systems (like PC's of Politecnico di Milano students) that provide compilers and libraries via [mk-style module stacks](https://github.com/pcafrica/mk)
+> (the preset uses fixed toolchain paths under `/u/sw/toolchains/...`). 
+> If you are not on such a system, do not use `./run.sh`, instead follow the "Manual build" instructions below or adapt `CMakePresets.json` to your local toolchain.
+>  
+> **Why use mk modules? Why configure a `CMakeLists.txt` file with `mk` modules?**
+> 
+> - _Why use `mk` modules?_ The purpose of this repository is to provide a learning environment for numerical methods for PDEs, not to build a complex C++ project.
+    >   Since the courses are held at PoliMI, where students have access to HPC systems that use mk modules to manage software environments, the provided `run.sh` script and `CMakePresets.json` are tailored for that context.
+> 
+>- _Why configure a `CMakeLists.txt` file with `mk` modules?_ I know that you could just load the mk modules in your shell and then run CMake.
+>  However, I use IDEs like CLion or VSCode that invoke CMake in a clean environment without the mk modules loaded.
+>  By configuring the `CMakeLists.txt` with the appropriate paths, I can ensure that the project builds correctly within these IDEs without needing to manually load mk modules each time.
 
 ## Overview
 
@@ -18,24 +38,6 @@ This repository contains small labs and examples used in the Numerical Methods f
 The code demonstrates practical implementations for simple PDE problems
 (Poisson 1D examples are provided in `lab-1` and `lab-2`).
 It is intended as a learning reference and starting point for experiments.
-
----
-
-## Key points
-- Two example labs are included: `lab-1` and `lab-2`.
-- Build system: CMake (with CMake presets) + Ninja.
-- The provided `CMakePresets.json` and `run.sh` are configured for an HPC toolchain (GCC, OpenMPI, deal.II, etc.)
-  commonly exposed via mk-style module stacks. See the "mk modules / HPC note" below.
-
----
-
-## mk modules / HPC note
-- The included `run.sh` and the default `nm4pde-lab` configure preset assume an HPC environment where compilers and libraries
-  are provided in fixed paths (as used by an mk-module setup). In this repository those paths appear under `/u/sw/toolchains/...`.
-- If you are on that target system (or you have the same toolchain paths),
-  `run.sh` will attempt to build and run the examples using the preset.
-- If you do **NOT** use mk modules or you don't have the exact toolchain installed,
-  use the Manual Build instructions below or adapt `CMakePresets.json` to point to your local compiler, MPI, and library locations.
 
 ---
 
@@ -61,8 +63,8 @@ Quickstart (recommended on the target HPC system with mk modules)
 The `run.sh` script will:
 - Check/install local packages (via `requirements.sh`)
 - Configure the project using the `nm4pde-lab` preset from `CMakePresets.json`
-- Ask which example to build and run (select `lab-1` or `lab-2`)
-- Build the selected example and run the produced executable with the appropriate LD_LIBRARY_PATH values from the preset environment.
+- Ask which example to build and run (select `lab-1` or `lab-2` for now)
+- Build the selected example and run the produced executable with the appropriate `LD_LIBRARY_PATH` values from the preset environment.
 
 Manual build (if not using `run.sh` or you need to adapt to a local machine)
 - Using the preset (if your environment matches the preset paths):
@@ -94,39 +96,14 @@ If your system uses MPI wrappers, set `MPI_CXX_COMPILER` accordingly, or configu
 ```
 
 Adapting `CMakePresets.json`
-- If you want to keep the preset workflow but target a different toolchain, edit `CMakePresets.json` and update the paths for `CMAKE_CXX_COMPILER`, `MPI_CXX_COMPILER`, `DEAL_II_DIR`, `Boost_DIR`, and `CMAKE_PREFIX_PATH` to match your installation.
+- If you want to keep the preset workflow but target a different toolchain,
+  edit `CMakePresets.json` and update the paths for `CMAKE_CXX_COMPILER`, `MPI_CXX_COMPILER`, `DEAL_II_DIR`, `Boost_DIR`, and `CMAKE_PREFIX_PATH` to match your installation.
 
 Project layout
 - `lab-1/` and `lab-2/`: each lab contains a `CMakeLists.txt` and example source files (`main.cpp`, `Poisson1D.cpp`, `Poisson1D.hpp`).
 - `CMakePresets.json`: convenience presets for the target HPC toolchain.
 - `run.sh`: helper that uses the preset to configure, build and run examples (see mk-modules note above).
 - `requirements.sh`: small helper to check for CMake and Ninja and optionally install them using apt (interactive).
-
----
-
-## Adding new labs (template)
-
-- Create a new directory `lab-N` where `N` is the lab number or short name.
-- Add a `CMakeLists.txt` for the executable target. Keep the target name the same as the directory (for example, `lab-3` in `lab-3/`).
-- Include source files (`main.cpp`, problem-specific sources like `Poisson1D.cpp`, and headers like `Poisson1D.hpp`).
-- Keep examples self-contained: prefer to add small helper functions inside the lab directory rather than changing global CMake logic.
-
-A minimal `CMakeLists.txt` template:
-
-```cmake
-# lab-N/CMakeLists.txt
-add_executable(lab-N main.cpp Poisson1D.cpp)
-# For simple projects no extra linking is required; add link_directories or target_link_libraries if needed.
-```
-
----
-
-## Future work
-This repository is new and will grow. Possible future improvements:
-- Add more labs covering time-dependent PDEs, finite-volume methods, and mesh adaptivity.
-- Add tests that validate small numerical properties (convergence rates for manufactured solutions).
-- Provide a `local` CMake preset (already included) and CI integration for automatic builds on push.
-- Add a LICENSE file and contribution guidelines (CONTRIBUTING.md) once the set of exercises stabilizes.
 
 ---
 
@@ -168,5 +145,5 @@ Examples
 ```
 
 Notes
-- When `nm4pde-lab` is used the script sets an appropriate LD_LIBRARY_PATH to include ARPACK/HDF5 libraries found in the mk toolchain; when `local-debug` is used the script runs the executable directly.
+- When `nm4pde-lab` is used the script sets an appropriate `LD_LIBRARY_PATH` to include `ARPACK/HDF5` libraries found in the mk toolchain; when `local-debug` is used the script runs the executable directly.
 - The `local-debug` preset targets `/usr/bin/g++` and `/usr/bin/mpicxx` and is intended for local laptop/desktop development.
