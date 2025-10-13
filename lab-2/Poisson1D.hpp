@@ -1,6 +1,10 @@
 #ifndef POISSON1D_HPP
 #define POISSON1D_HPP
 
+// Set to 1 for smooth case (points 3 and 4),
+// 0 for non-smooth case (point 5).
+#define SMOOTH_CASE 1
+
 #include <deal.II/base/function.h>
 #include <deal.II/dofs/dof_handler.h>
 #include <deal.II/grid/tria.h>
@@ -50,18 +54,18 @@ public:
     ForcingTerm() = default;
 
     // Evaluation.
-    virtual double
-    value(const Point<dim> &p,
+    virtual double value(const Point<dim> &p,
           const unsigned int /*component*/ = 0) const override
     {
-      // Points 3 and 4.
+#if SMOOTH_CASE
+      // Points 3 and 4; smooth case.
       return 4.0 * M_PI * M_PI * std::sin(2.0 * M_PI * p[0]);
-
-      // Point 5.
-      // if (p[0] < 0.5)
-      //   return 0.0;
-      // else
-      //   return -std::sqrt(p[0] - 0.5);
+#else
+      // Point 5; non-smooth case.
+      if (p[0] < 0.5)
+          return 0.0;
+      return -std::sqrt(p[0] - 0.5);
+#endif
     }
   };
 
@@ -70,22 +74,21 @@ public:
   {
   public:
     // Constructor.
-    ExactSolution()
-    {}
+    ExactSolution() {}
 
     // Evaluation.
-    virtual double
-    value(const Point<dim> &p,
+    virtual double value(const Point<dim> &p,
           const unsigned int /*component*/ = 0) const override
     {
-      // Points 3 and 4.
+#if SMOOTH_CASE
+      // Points 3 and 4; smooth case.
       return std::sin(2.0 * M_PI * p[0]);
-
-      // Point 5.
-      // if (p[0] < 0.5)
-      //   return A * p[0];
-      // else
-      //   return A * p[0] + 4.0 / 15.0 * std::pow(p[0] - 0.5, 2.5);
+#else
+      // Point 5; non-smooth case.
+      if (p[0] < 0.5)
+        return A * p[0];
+      return A * p[0] + 4.0 / 15.0 * std::pow(p[0] - 0.5, 2.5);
+#endif
     }
 
     // Gradient evaluation.
@@ -93,20 +96,21 @@ public:
     // dim-dimensional vector. In our case, dim = 1, so that the Tensor will in
     // practice contain a single number. Nonetheless, we need to return an
     // object of type Tensor.
-    virtual Tensor<1, dim>
-    gradient(const Point<dim> &p,
+    virtual Tensor<1, dim> gradient(const Point<dim> &p,
              const unsigned int /*component*/ = 0) const override
     {
       Tensor<1, dim> result;
 
+#if SMOOTH_CASE
       // Points 3 and 4.
       result[0] = 2.0 * M_PI * std::cos(2.0 * M_PI * p[0]);
-
+#else
       // Point 5.
-      // if (p[0] < 0.5)
-      //   result[0] = A;
-      // else
-      //   result[0] = A + 2.0 / 3.0 * std::pow(p[0] - 0.5, 1.5);
+      if (p[0] < 0.5)
+        result[0] = A;
+      else
+        result[0] = A + 2.0 / 3.0 * std::pow(p[0] - 0.5, 1.5);
+#endif
 
       return result;
     }
