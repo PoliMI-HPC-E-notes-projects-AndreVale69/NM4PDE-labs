@@ -1,7 +1,7 @@
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 ![Website](https://img.shields.io/website?url=https%3A%2F%2Fpolimi-hpc-e-notes-projects-andrevale69.github.io%2FHPC-E-PoliMI-university-notes%2F&up_message=online&up_color=green&down_message=offline&down_color=red&logo=githubpages&label=Notes%20Website%20status)
 
-# Laboratory - Numerical Methods for Partial Differential Equations
+# Lab - Numerical Methods for Partial Differential Equations
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@
 >  However, I use IDEs like CLion or VSCode that invoke CMake in a clean environment without the mk modules loaded.
 >  By configuring the `CMakeLists.txt` with the appropriate paths, I can ensure that the project builds correctly within these IDEs without needing to manually load mk modules each time.
 
-## Overview
+### Overview
 
 This repository was created to learn and practice PDE programming techniques taught in the
 "Numerical Methods for Partial Differential Equations" course at Politecnico di Milano (PoliMI).
@@ -41,7 +41,7 @@ It is intended as a learning reference and starting point for experiments.
 
 ---
 
-## Prerequisites
+### Prerequisites
 - CMake >= 3.12
 - Ninja build (or another generator supported by CMake)
 - A C++ compiler (the presets target GCC 11 and MPI C++ wrappers)
@@ -88,7 +88,7 @@ If your system uses MPI wrappers, set `MPI_CXX_COMPILER` accordingly, or configu
 
 ---
 
-## Running the built examples
+### Running the built examples
 - After a successful build the executables are in `build/nm4pde-lab/` (or the equivalent binary dir you configured). Example:
 
 ```bash
@@ -107,14 +107,14 @@ Project layout
 
 ---
 
-## `run.sh` usage
-The `run.sh` helper script has improved UX and supports automatic preset selection and a small CLI. The script now supports:
+### `run.sh` usage
+The `run.sh` helper script has improved UX and supports automatic preset selection and a small CLI. The script supports:
 
-- `--preset NAME` — explicitly choose a CMake preset (for example `nm4pde-lab` or `local-debug`).
-- `--presets` — print all available configure preset names from `CMakePresets.json` and exit (handy to know which presets you can pass to `--preset`).
-- `--example NAME` — build and run the chosen example non-interactively. IMPORTANT: `--example` requires a non-empty NAME argument; calling `./run.sh --example` without a name will now print an error and exit instead of entering the interactive prompt loop.
-- `-y` or `--yes` — non-interactive mode: assume "yes" at prompts.
-- `NM4PDE_PRESET` environment variable — if set, it is used when `--preset` is not provided.
+- `--preset NAME`: explicitly choose a CMake preset (for example `nm4pde-lab` or `local-debug`).
+- `--presets`: print all available configure preset names from `CMakePresets.json` and exit (handy to know which presets you can pass to `--preset`).
+- `--example NAME`: build and run the chosen example non-interactively. IMPORTANT: `--example` requires a non-empty NAME argument; calling `./run.sh --example` without a name will now print an error and exit instead of entering the interactive prompt loop.
+- `-y` or `--yes`: non-interactive mode: assume "yes" at prompts.
+- `NM4PDE_PRESET` environment variable: if set, it is used when `--preset` is not provided.
 
 Auto-selection logic (default behavior)
 - If `--preset` is provided, the script uses that preset.
