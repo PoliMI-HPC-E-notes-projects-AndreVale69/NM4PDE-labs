@@ -31,7 +31,7 @@ void Poisson1DExt::setup()
 
         mu_function.initialize(vars, mu_expr, constants);
         rhs_function.initialize(vars, f_expr, constants);
-        exact_solution_function.initialize(vars, prm.get("exact_solution"), constants);
+        exact_solution_function.initialize(vars, exact_solution_expr, constants);
     }
 
     // Create the mesh.

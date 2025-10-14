@@ -37,6 +37,7 @@ public:
         prm.parse_input(filename);
         mu_expr = prm.get("mu");
         f_expr = prm.get("f");
+        exact_solution_expr = prm.get("exact_solution");
         N = prm.get_integer("N");
         r = prm.get_integer("degree");
     }
