@@ -1,0 +1,5 @@
+set mu = 1.0
+set f = 4*pi*pi*sin(2*pi*x)
+set exact_solution = sin(2*pi*x)
+set degree = 2
+set N = 39

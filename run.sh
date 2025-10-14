@@ -22,11 +22,18 @@ PRESET_FILE="$SCRIPT_DIR/CMakePresets.json"
 examples=()
 for d in "$SCRIPT_DIR"/lab-*; do
     [ -d "$d" ] || continue
-    examples+=("$(basename "$d")")
+    # Only add if it contains a CMakeLists.txt (valid lab)
+    if [ -f "$d/CMakeLists.txt" ]; then
+        examples+=("$(basename "$d")")
+    fi
+    # fallback: add all directories if no CMakeLists.txt found
+    if [ ${#examples[@]} -eq 0 ]; then
+        examples+=("$(basename "$d")")
+    fi
 done
 # Fallback to a conservative built-in list if discovery finds nothing
 if [ ${#examples[@]} -eq 0 ]; then
-    examples=("lab-1" "lab-2")
+    examples=("lab-1" "lab-2" "lab-2-ext")
 fi
 
 list_presets() {
@@ -276,21 +283,38 @@ if [ -n "$EXAMPLE" ]; then
     exit 0
 fi
 
+# Interactive selection using fzf if available, else fallback to select
+choose_example() {
+    local choice
+    if command -v fzf >/dev/null 2>&1; then
+        choice=$(printf '%s\n' "${examples[@]}" | fzf --prompt="Select lab: ")
+        echo "$choice"
+    else
+        echo "(Tip: install 'fzf' for a better interactive menu with arrow keys)"
+        select choice in "${examples[@]}"; do
+            if [[ -n "$choice" ]]; then
+                echo "$choice"
+                break
+            else
+                echo "Invalid option. Please try again."
+            fi
+        done
+    fi
+}
+
 # ask the user which example to run (interactive)
 printf "\n%b\n" "${green}~ Available labs:${reset}"
-select example in "${examples[@]}"; do
-    if [[ " ${examples[*]} " == *" $example "* ]]; then
-        printf "\n%b %s\n" "${green}\u2714${reset}" "Running example: $example"
-        ninja "$example" || exit 1
-        cd ../.. || exit 1
-        # Run with special LD_LIBRARY_PATH only for nm4pde-lab preset
-        if [ "$PRESET" = "nm4pde-lab" ]; then
-            LD_LIBRARY_PATH=/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/arpack/3.8.0/lib:/u/sw/toolchains/gcc-glibc/11.2.0/base/lib:/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/hdf5/1.12.0/lib:$LD_LIBRARY_PATH ./build/"$PRESET"/"$example"/"$example" || exit 1
-        else
-            ./build/"$PRESET"/"$example"/"$example" || exit 1
-        fi
-        break
-    else
-        printf "%b %s\n" "${red}\u00D7${reset}" "Invalid option. Please try again."
-    fi
-done
+example=$(choose_example)
+if [[ -z "$example" ]]; then
+    echo -e "${red}\u00D7${reset} No lab selected. Exiting."
+    exit 1
+fi
+printf "\n%b %s\n" "${green}\u2714${reset}" "Running example: $example"
+ninja "$example" || exit 1
+cd ../.. || exit 1
+# Run with special LD_LIBRARY_PATH only for nm4pde-lab preset
+if [ "$PRESET" = "nm4pde-lab" ]; then
+    LD_LIBRARY_PATH=/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/arpack/3.8.0/lib:/u/sw/toolchains/gcc-glibc/11.2.0/base/lib:/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/hdf5/1.12.0/lib:$LD_LIBRARY_PATH ./build/"$PRESET"/"$example"/"$example" || exit 1
+else
+    ./build/"$PRESET"/"$example"/"$example" || exit 1
+fi
