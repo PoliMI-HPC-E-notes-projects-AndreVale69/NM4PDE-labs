@@ -63,7 +63,7 @@ Quickstart (recommended on the target HPC system with `mk` modules)
    ./run.sh
    ```
 
-![run.sh demo](resources/_static/out.gif)
+![run.sh demo](resources/_static/run_sh.gif)
 
 The `run.sh` script will:
 - Check/install local packages (via `requirements.sh`)
