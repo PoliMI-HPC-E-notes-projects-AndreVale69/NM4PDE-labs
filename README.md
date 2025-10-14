@@ -7,8 +7,12 @@
 
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
-- [Running the built examples](#running-the-built-examples)
 - [`run.sh` usage](#runsh-usage)
+- [Usage Examples](#usage-examples)
+  - [Interactive Example Selection](#interactive-example-selection)
+  - [Non-Interactive Usage](#non-interactive-usage)
+- [Notes](#notes)
+- [Troubleshooting](#troubleshooting)
 
 > [!IMPORTANT]  
 > The helper script `run.sh` and the `nm4pde-lab` configure preset are intended for HPC systems (like PC's of Politecnico di Milano students) that provide compilers and libraries via [mk-style module stacks](https://github.com/pcafrica/mk)
@@ -48,6 +52,7 @@ It is intended as a learning reference and starting point for experiments.
 - CMake `>= 3.12`
 - Ninja build (or another generator supported by CMake)
 - A C++ compiler (the presets target GCC 11 and MPI C++ wrappers)
+- `fzf` (required for interactive example selection with the keyboard)
 - (Optional) On the HPC target: the toolchain and libraries referenced in the presets (deal.II, Boost, ARPACK, HDF5, etc.)
 
 Quickstart (recommended on the target HPC system with `mk` modules)
@@ -91,25 +96,6 @@ If your system uses MPI wrappers, set `MPI_CXX_COMPILER` accordingly, or configu
 
 ---
 
-### Running the built examples
-- After a successful build the executables are in `build/nm4pde-lab/` (or the equivalent binary dir you configured). Example:
-
-```bash
-./build/nm4pde-lab/lab-1/lab-1
-```
-
-Adapting `CMakePresets.json`
-- If you want to keep the preset workflow but target a different toolchain,
-  edit `CMakePresets.json` and update the paths for `CMAKE_CXX_COMPILER`, `MPI_CXX_COMPILER`, `DEAL_II_DIR`, `Boost_DIR`, and `CMAKE_PREFIX_PATH` to match your installation.
-
-Project layout
-- `lab-1/` and `lab-2/`: each lab contains a `CMakeLists.txt` and example source files (`main.cpp`, `Poisson1D.cpp`, `Poisson1D.hpp`).
-- `CMakePresets.json`: convenience presets for the target HPC toolchain.
-- `run.sh`: helper that uses the preset to configure, build and run examples (see mk-modules note above).
-- `requirements.sh`: small helper to check for CMake and Ninja and optionally install them using apt (interactive).
-
----
-
 ### `run.sh` usage
 The `run.sh` helper script has improved UX and supports automatic preset selection and a small CLI. The script supports:
 
@@ -126,27 +112,47 @@ Auto-selection logic (default behavior)
 - Else, if `mpicxx` and `g++` are available on the system, the script falls back to `local-debug`.
 - If none of the above applies the script aborts with a short set of manual build instructions.
 
-Examples
+---
 
-- List presets:
+## Usage Examples
+
+### Interactive Example Selection
+
+To build and run any available lab, simply run:
+
+```bash
+./run.sh
+```
+
+You will be presented with an interactive menu (powered by `fzf`) to select which example to build and run. Use your keyboard to navigate and select the desired lab.
+
+### Non-Interactive Usage
+
+You can also build and run a specific example directly:
+
+```bash
+./run.sh --example lab-1
+```
+
+Or list all available labs:
+
+```bash
+./run.sh --list
+```
+
+Or list all available CMake presets:
 
 ```bash
 ./run.sh --presets
 ```
 
-- Build & run a specific example (non-interactive):
+### Notes
 
-```bash
-./run.sh --example lab-1 -y
-```
+- When using the `nm4pde-lab` preset, the script sets `LD_LIBRARY_PATH` to include ARPACK/HDF5 libraries from the mk toolchain.
+- The `local-debug` preset uses `/usr/bin/g++` and `/usr/bin/mpicxx` for local development.
+- If you add a new lab (e.g., `lab-3`), it will automatically appear in the interactive menu.
 
-- Requesting an example without a name now fails fast:
+### Troubleshooting
 
-```bash
-./run.sh --example
-# prints error and usage, exit code != 0
-```
-
-Notes
-- When `nm4pde-lab` is used the script sets an appropriate `LD_LIBRARY_PATH` to include `ARPACK/HDF5` libraries found in the mk toolchain; when `local-debug` is used the script runs the executable directly.
-- The `local-debug` preset targets `/usr/bin/g++` and `/usr/bin/mpicxx` and is intended for local laptop/desktop development.
+- If you see errors about missing tools (e.g., `fzf`, `cmake`, `ninja`), run `./requirements.sh` to install them.
+- If a build fails, check that your environment matches the requirements and that you have the correct toolchain or preset selected.
