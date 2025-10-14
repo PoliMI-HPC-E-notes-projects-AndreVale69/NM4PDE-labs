@@ -1,0 +1,5 @@
+set mu = 1.0
+set f = if(x<0.5, 0.0, -sqrt(x-0.5))
+set exact_solution = if(x<0.5, (-4.0 / 15.0 * pow(0.5, 2.5)) * x, (-4.0 / 15.0 * pow(0.5, 2.5)) * x + 4.0 / 15.0 * pow(x - 0.5, 2.5))
+set degree = 2
+set N = 319

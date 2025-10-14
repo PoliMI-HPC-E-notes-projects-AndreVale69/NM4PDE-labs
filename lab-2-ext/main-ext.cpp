@@ -6,9 +6,22 @@
 
 #include "Poisson1D-ext.hpp"
 
-int main(int /*argc*/, char * /*argv*/[])
+int main(int argc, char * argv[])
 {
     ConvergenceTable table;
+
+    // Ask user for smooth or non-smooth case (or use argv[1] if provided)
+    std::string case_type;
+    std::cout << "Choose case ([s]mooth/[n]on-smooth): ";
+    std::getline(std::cin, case_type);
+    if (case_type == "s" || case_type == "S" || case_type == "smooth" || case_type.empty()) {
+        case_type = "smooth";
+    } else if (case_type == "n" || case_type == "N" || case_type == "non-smooth" || case_type == "nonsmooth") {
+        case_type = "non-smooth";
+    } else {
+        std::cout << "Invalid input. Defaulting to 'smooth'." << std::endl;
+        case_type = "smooth";
+    }
 
     const std::vector<unsigned int> N_values = {9, 19, 39, 79, 159, 319};
 
@@ -19,7 +32,7 @@ int main(int /*argc*/, char * /*argv*/[])
     {
         const std::string parameter_file = std::string(__FILE__).substr(
             0, std::string(__FILE__).find_last_of("/\\")
-        ) + "/poisson1d-" + std::to_string(N) + ".prm";
+        ) + "/" + case_type + "/poisson1d-" + std::to_string(N) + ".prm";
         Poisson1DExt problem(parameter_file);
 
         problem.setup();
