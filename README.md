@@ -63,6 +63,8 @@ Quickstart (recommended on the target HPC system with `mk` modules)
    ./run.sh
    ```
 
+![run.sh demo](resources/_static/out.gif)
+
 The `run.sh` script will:
 - Check/install local packages (via `requirements.sh`)
 - Configure the project using the `nm4pde-lab` preset from `CMakePresets.json`
