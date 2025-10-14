@@ -40,3 +40,20 @@ else
         exit 1
     fi
 fi
+
+# Check if fzf is installed
+if command -v fzf &> /dev/null
+then
+    printf "%b %s\n" "${green}\u2714${reset}" "fzf is already installed"
+else
+    printf "%b %s\n" "${red}\u00D7${reset}" "fzf is not installed. Do you want to install it? (y/n)"
+    read -r answer
+    if [ "$answer" != "${answer#[Yy]}" ] ;then
+        echo "Installing fzf..."
+        sudo apt update -qq
+        sudo apt install fzf -qq -y
+    else
+        echo "fzf is required to build the project. Exiting..."
+        exit 1
+    fi
+fi
