@@ -17,10 +17,10 @@
 >  
 > **Why use mk modules? Why configure a `CMakeLists.txt` file with `mk` modules?**
 > 
-> - _Why use `mk` modules?_ The purpose of this repository is to provide a learning environment for numerical methods for PDEs, not to build a complex C++ project.
-    >   Since the courses are held at PoliMI, where students have access to HPC systems that use mk modules to manage software environments, the provided `run.sh` script and `CMakePresets.json` are tailored for that context.
+> - **_Why use `mk` modules?_** The purpose of this repository is to provide a learning environment for numerical methods for PDEs, not to build a complex C++ project.
+>   Since the courses are held at PoliMI, where students have access to HPC systems that use mk modules to manage software environments, the provided `run.sh` script and `CMakePresets.json` are tailored for that context.
 > 
->- _Why configure a `CMakeLists.txt` file with `mk` modules?_ I know that you could just load the mk modules in your shell and then run CMake.
+>- **_Why configure a `CMakeLists.txt` file with `mk` modules?_** I know that you could just load the mk modules in your shell and then run CMake.
 >  However, I use IDEs like CLion or VSCode that invoke CMake in a clean environment without the mk modules loaded.
 >  By configuring the `CMakeLists.txt` with the appropriate paths, I can ensure that the project builds correctly within these IDEs without needing to manually load mk modules each time.
 
@@ -39,15 +39,18 @@ The code demonstrates practical implementations for simple PDE problems
 (Poisson 1D examples are provided in `lab-1` and `lab-2`).
 It is intended as a learning reference and starting point for experiments.
 
+> [!NOTE]
+> You can download the `mk` tool from [pcafrica/mk](https://github.com/pcafrica/mk) github repository. Specifically, we use the version tagged [`v2024.0` in the release section](https://github.com/pcafrica/mk/releases/tag/v2024.0) (full version).
+
 ---
 
 ### Prerequisites
-- CMake >= 3.12
+- CMake `>= 3.12`
 - Ninja build (or another generator supported by CMake)
 - A C++ compiler (the presets target GCC 11 and MPI C++ wrappers)
 - (Optional) On the HPC target: the toolchain and libraries referenced in the presets (deal.II, Boost, ARPACK, HDF5, etc.)
 
-Quickstart (recommended on the target HPC system with mk modules)
+Quickstart (recommended on the target HPC system with `mk` modules)
 1. Make the helper scripts executable (if not already):
 
    ```bash
