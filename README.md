@@ -7,6 +7,7 @@
 
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
+- [Using CLion](#using-clion)
 - [`run.sh` usage](#runsh-usage)
 - [Usage Examples](#usage-examples)
   - [Interactive Example Selection](#interactive-example-selection)
@@ -93,6 +94,36 @@ cmake --build . -- -j
 ```
 
 If your system uses MPI wrappers, set `MPI_CXX_COMPILER` accordingly, or configure `CMAKE_CXX_COMPILER` to the MPI C++ wrapper (`mpicxx`).
+
+---
+
+### Using CLion
+
+If you use CLion to build or run the examples, the IDE runs programs in a clean environment and may not have the mk toolchain libraries on `LD_LIBRARY_PATH`.
+
+Add the following line to the Environment variables of your Run/Debug Configuration for the executable (Run -> Edit Configurations... -> select the target):
+
+```
+LD_LIBRARY_PATH=/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/arpack/3.8.0/lib:/u/sw/toolchains/gcc-glibc/11.2.0/base/lib:/u/sw/toolchains/gcc-glibc/11.2.0/pkgs/hdf5/1.12.0/lib:$LD_LIBRARY_PATH
+```
+
+This ensures CLion will find ARPACK/HDF5 and other libraries provided by the `nm4pde-lab` mk toolchain when running the executable from the IDE.
+
+(If you prefer to set this globally for your user session, add the same line to your shell startup file, e.g. `~/.bashrc`.)
+
+---
+
+> [!TIP]
+> Open your Run/Debug Configuration and paste the `LD_LIBRARY_PATH` string into the Environment variables field.
+>
+> 1) Open Run -> Edit Configurations... and select the target configuration:
+>
+>    ![Run Configuration](_static/clion-run-config.png)
+>
+> 2) Paste the `LD_LIBRARY_PATH` string into the Environment variables box for the selected configuration:
+>
+>    ![Paste Environment Variable](_static/clion-env-paste.png)
+>
 
 ---
 
